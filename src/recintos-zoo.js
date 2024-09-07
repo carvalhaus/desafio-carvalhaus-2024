@@ -16,9 +16,9 @@ class RecintosZoo {
 
     const animais = [macaco, leao, leopardo, crocodilo, gazela, hipopotamo];
     const especies = animais.map((animal) => animal.especie);
-    const result = especies.find((especie) => especie === animal);
+    const validAnimal = especies.find((especie) => especie === animal);
 
-    if (!result) {
+    if (!validAnimal) {
       return { erro: "Animal inválido" };
     }
 
