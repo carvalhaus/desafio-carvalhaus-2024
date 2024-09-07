@@ -25,16 +25,23 @@ class RecintosZoo {
     const hipopotamo = new Animais("HIPOPOTAMO", 4, "savana ou rio");
 
     const animais = [macaco, leao, leopardo, crocodilo, gazela, hipopotamo];
-    const especies = animais.map((animal) => animal.especie);
-    const validaAnimal = especies.find((especie) => especie === animal);
+    const animalValido = animais.find((a) => a.especie === animal);
 
-    if (!validaAnimal) {
+    if (!animalValido) {
       return { erro: "Animal inválido" };
     }
 
     this.recintos[0].ocuparEspacos = macaco.tamanho * 3;
     this.recintos[2].ocuparEspacos = gazela.tamanho;
     this.recintos[4].ocuparEspacos = leao.tamanho;
+
+    const recintoViavel = this.recintos.find(
+      (recinto) => recinto.espacosLivres >= animalValido.tamanho * quantidade
+    );
+
+    if (!recintoViavel) {
+      return { erro: "Não há recinto viável" };
+    }
 
     const recintosViaveis = this.recintos.map(
       (recinto) => recinto.informacaoRecinto
