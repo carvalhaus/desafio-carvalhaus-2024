@@ -14,6 +14,14 @@ class RecintosZoo {
     const gazela = new Animais("GAZELA", 2, "savana");
     const hipopotamo = new Animais("HIPOPOTAMO", 4, "savana ou rio");
 
+    const animais = [macaco, leao, leopardo, crocodilo, gazela, hipopotamo];
+    const especies = animais.map((animal) => animal.especie);
+    const result = especies.find((especie) => especie === animal);
+
+    if (!result) {
+      return { erro: "Animal inválido" };
+    }
+
     const recinto1 = new RecintosExistentes(1, "savana", 10);
     recinto1.ocuparEspacos = macaco.tamanho * 3;
 
