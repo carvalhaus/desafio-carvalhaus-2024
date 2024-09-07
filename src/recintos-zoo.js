@@ -2,6 +2,16 @@ import { Animais } from "./animais";
 import { RecintosExistentes } from "./recintosExistentes";
 
 class RecintosZoo {
+  constructor() {
+    this.recintos = [
+      new RecintosExistentes(1, "savana", 10),
+      new RecintosExistentes(2, "floresta", 5),
+      new RecintosExistentes(3, "savana e rio", 7),
+      new RecintosExistentes(4, "rio", 8),
+      new RecintosExistentes(5, "savana", 9),
+    ];
+  }
+
   analisaRecintos(animal, quantidade) {
     if (quantidade <= 0) {
       return { erro: "Quantidade inválida" };
@@ -16,28 +26,17 @@ class RecintosZoo {
 
     const animais = [macaco, leao, leopardo, crocodilo, gazela, hipopotamo];
     const especies = animais.map((animal) => animal.especie);
-    const validAnimal = especies.find((especie) => especie === animal);
+    const validaAnimal = especies.find((especie) => especie === animal);
 
-    if (!validAnimal) {
+    if (!validaAnimal) {
       return { erro: "Animal inválido" };
     }
 
-    const recinto1 = new RecintosExistentes(1, "savana", 10);
-    recinto1.ocuparEspacos = macaco.tamanho * 3;
+    this.recintos[0].ocuparEspacos = macaco.tamanho * 3;
+    this.recintos[2].ocuparEspacos = gazela.tamanho;
+    this.recintos[4].ocuparEspacos = leao.tamanho;
 
-    const recinto2 = new RecintosExistentes(2, "floresta", 5);
-
-    const recinto3 = new RecintosExistentes(3, "savana e rio", 7);
-    recinto3.ocuparEspacos = gazela.tamanho;
-
-    const recinto4 = new RecintosExistentes(4, "rio", 8);
-
-    const recinto5 = new RecintosExistentes(5, "savana", 9);
-    recinto5.ocuparEspacos = leao.tamanho;
-
-    const recintos = [recinto1, recinto2, recinto3, recinto4, recinto5];
-
-    const recintosViaveis = recintos.map(
+    const recintosViaveis = this.recintos.map(
       (recinto) => recinto.informacaoRecinto
     );
 
