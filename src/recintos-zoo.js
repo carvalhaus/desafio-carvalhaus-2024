@@ -1,5 +1,5 @@
-import { Animais } from "./animais";
-import { RecintosExistentes } from "./recintosExistentes";
+import { Animais } from "./animais.js";
+import { RecintosExistentes } from "./recintosExistentes.js";
 
 class RecintosZoo {
   constructor() {
@@ -35,19 +35,31 @@ class RecintosZoo {
     this.recintos[2].ocuparEspacos = gazela.tamanho;
     this.recintos[4].ocuparEspacos = leao.tamanho;
 
-    const recintoViavel = this.recintos.find(
+    const recintosFiltrados = this.recintos.filter((recinto) => {
+      const biomasRecinto = recinto.bioma.split(" e ");
+      const biomasAnimal = animalValido.bioma.split(" ou ");
+      return biomasRecinto.some((biomaRecinto) =>
+        biomasAnimal.includes(biomaRecinto)
+      );
+    });
+
+    const recintosViaveis = recintosFiltrados.filter(
       (recinto) => recinto.espacosLivres >= animalValido.tamanho * quantidade
     );
 
-    if (!recintoViavel) {
+    if (recintosViaveis.length === 0) {
       return { erro: "Não há recinto viável" };
     }
 
-    const recintosViaveis = this.recintos.map(
+    recintosViaveis.forEach((recinto) => {
+      recinto.ocuparEspacos = animalValido.tamanho * quantidade;
+    });
+
+    const informacoesRecintosViaveis = recintosViaveis.map(
       (recinto) => recinto.informacaoRecinto
     );
 
-    return { recintosViaveis: recintosViaveis };
+    return { recintosViaveis: informacoesRecintosViaveis };
   }
 }
 
