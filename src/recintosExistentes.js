@@ -4,14 +4,23 @@ class RecintosExistentes {
     this.bioma = bioma;
     this.tamanhoTotal = tamanhoTotal;
     this.espacosOcupados = 0;
+    this.animaisNoRecinto = [];
   }
 
   set ocuparEspacos(quantidade) {
     this.espacosOcupados += quantidade;
   }
 
+  set registrarAnimaisNoRecinto(animal) {
+    this.animaisNoRecinto.push(animal);
+  }
+
   get espacosLivres() {
     return this.tamanhoTotal - this.espacosOcupados;
+  }
+
+  get animaisRegistrados() {
+    return this.animaisNoRecinto;
   }
 
   get informacaoRecinto() {
@@ -21,7 +30,8 @@ class RecintosExistentes {
       " (espaço livre: " +
       this.espacosLivres +
       " total: " +
-      this.tamanhoTotal
+      this.tamanhoTotal +
+      ")"
     );
   }
 }

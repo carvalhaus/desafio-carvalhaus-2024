@@ -32,8 +32,15 @@ class RecintosZoo {
     }
 
     this.recintos[0].ocuparEspacos = macaco.tamanho * 3;
+    for (let i = 0; i < 3; i++) {
+      this.recintos[0].registrarAnimaisNoRecinto = macaco;
+    }
+
     this.recintos[2].ocuparEspacos = gazela.tamanho;
+    this.recintos[2].registrarAnimaisNoRecinto = gazela;
+
     this.recintos[4].ocuparEspacos = leao.tamanho;
+    this.recintos[4].registrarAnimaisNoRecinto = leao;
 
     const recintosFiltrados = this.recintos.filter((recinto) => {
       const biomasRecinto = recinto.bioma.split(" e ");
@@ -43,21 +50,50 @@ class RecintosZoo {
       );
     });
 
-    const recintosViaveis = recintosFiltrados.filter(
-      (recinto) => recinto.espacosLivres >= animalValido.tamanho * quantidade
-    );
+    const recintosViaveis = recintosFiltrados.filter((recinto) => {
+      const animaisNoRecinto = recinto.animaisRegistrados;
+      const carnivoroNoRecinto = animaisNoRecinto.find((a) => a.carnivoro);
+      const recintoVazio = animaisNoRecinto.length === 0;
+
+      const especieDiferente = animaisNoRecinto.some(
+        (animalRegistrado) => animalRegistrado.especie !== animalValido.especie
+      );
+
+      if (especieDiferente) {
+        recinto.ocuparEspacos = 1;
+      }
+
+      const espacosSuficientes =
+        recinto.espacosLivres >= animalValido.tamanho * quantidade;
+
+      const precisaDeCompanhia =
+        animalValido.especie === "MACACO" && quantidade === 1;
+      const atendeCondicaoCompanhia =
+        !precisaDeCompanhia ||
+        (recintoVazio && quantidade > 1) ||
+        !recintoVazio;
+
+      if (animalValido.carnivoro) {
+        return (
+          espacosSuficientes &&
+          (recintoVazio ||
+            (carnivoroNoRecinto &&
+              carnivoroNoRecinto.especie === animalValido.especie)) &&
+          atendeCondicaoCompanhia
+        );
+      }
+
+      return espacosSuficientes && atendeCondicaoCompanhia;
+    });
 
     if (recintosViaveis.length === 0) {
       return { erro: "Não há recinto viável" };
     }
 
-    recintosViaveis.forEach((recinto) => {
+    const informacoesRecintosViaveis = recintosViaveis.map((recinto) => {
       recinto.ocuparEspacos = animalValido.tamanho * quantidade;
+      return recinto.informacaoRecinto;
     });
-
-    const informacoesRecintosViaveis = recintosViaveis.map(
-      (recinto) => recinto.informacaoRecinto
-    );
 
     return { recintosViaveis: informacoesRecintosViaveis };
   }
