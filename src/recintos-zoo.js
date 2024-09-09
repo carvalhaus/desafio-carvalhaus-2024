@@ -52,11 +52,17 @@ class RecintosZoo {
 
     const recintosViaveis = recintosFiltrados.filter((recinto) => {
       const animaisNoRecinto = recinto.animaisRegistrados;
+
       const carnivoroNoRecinto = animaisNoRecinto.find((a) => a.carnivoro);
+
       const recintoVazio = animaisNoRecinto.length === 0;
 
+      if (!animalValido.carnivoro && carnivoroNoRecinto) {
+        return false;
+      }
+
       const especieDiferente = animaisNoRecinto.some(
-        (animalRegistrado) => animalRegistrado.especie !== animalValido.especie
+        (animalNoRecinto) => animalNoRecinto.especie !== animalValido.especie
       );
 
       if (especieDiferente) {
@@ -68,22 +74,18 @@ class RecintosZoo {
 
       const precisaDeCompanhia =
         animalValido.especie === "MACACO" && quantidade === 1;
-      const atendeCondicaoCompanhia =
-        !precisaDeCompanhia ||
-        (recintoVazio && quantidade > 1) ||
-        !recintoVazio;
 
-      if (animalValido.carnivoro) {
-        return (
-          espacosSuficientes &&
-          (recintoVazio ||
-            (carnivoroNoRecinto &&
-              carnivoroNoRecinto.especie === animalValido.especie)) &&
-          atendeCondicaoCompanhia
-        );
-      }
+      const podeAdicionarAnimalCarnivoro =
+        !animalValido.carnivoro ||
+        (carnivoroNoRecinto &&
+          carnivoroNoRecinto.especie === animalValido.especie);
 
-      return espacosSuficientes && atendeCondicaoCompanhia;
+      const espacoViavel =
+        espacosSuficientes &&
+        !precisaDeCompanhia &&
+        (recintoVazio || podeAdicionarAnimalCarnivoro);
+
+      return espacoViavel;
     });
 
     if (recintosViaveis.length === 0) {
