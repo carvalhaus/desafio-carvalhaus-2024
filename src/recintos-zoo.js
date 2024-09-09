@@ -10,6 +10,15 @@ class RecintosZoo {
       new RecintosExistentes(4, "rio", 8),
       new RecintosExistentes(5, "savana", 9),
     ];
+
+    this.animais = [
+      new Animais("MACACO", 1, "savana ou floresta"),
+      new Animais("LEAO", 3, "savana", true),
+      new Animais("LEOPARDO", 2, "savana", true),
+      new Animais("CROCODILO", 3, "rio", true),
+      new Animais("GAZELA", 2, "savana"),
+      new Animais("HIPOPOTAMO", 4, "savana ou rio"),
+    ];
   }
 
   analisaRecintos(animal, quantidade) {
@@ -17,30 +26,22 @@ class RecintosZoo {
       return { erro: "Quantidade inválida" };
     }
 
-    const macaco = new Animais("MACACO", 1, "savana ou floresta");
-    const leao = new Animais("LEAO", 3, "savana", true);
-    const leopardo = new Animais("LEOPARDO", 2, "savana", true);
-    const crocodilo = new Animais("CROCODILO", 3, "rio", true);
-    const gazela = new Animais("GAZELA", 2, "savana");
-    const hipopotamo = new Animais("HIPOPOTAMO", 4, "savana ou rio");
-
-    const animais = [macaco, leao, leopardo, crocodilo, gazela, hipopotamo];
-    const animalValido = animais.find((a) => a.especie === animal);
+    const animalValido = this.animais.find((a) => a.especie === animal);
 
     if (!animalValido) {
       return { erro: "Animal inválido" };
     }
 
-    this.recintos[0].ocuparEspacos = macaco.tamanho * 3;
+    this.recintos[0].ocuparEspacos = this.animais[0].tamanho * 3;
     for (let i = 0; i < 3; i++) {
-      this.recintos[0].registrarAnimaisNoRecinto = macaco;
+      this.recintos[0].registrarAnimaisNoRecinto = this.animais[0];
     }
 
-    this.recintos[2].ocuparEspacos = gazela.tamanho;
-    this.recintos[2].registrarAnimaisNoRecinto = gazela;
+    this.recintos[2].ocuparEspacos = this.animais[4].tamanho;
+    this.recintos[2].registrarAnimaisNoRecinto = this.animais[4];
 
-    this.recintos[4].ocuparEspacos = leao.tamanho;
-    this.recintos[4].registrarAnimaisNoRecinto = leao;
+    this.recintos[4].ocuparEspacos = this.animais[1].tamanho;
+    this.recintos[4].registrarAnimaisNoRecinto = this.animais[1];
 
     const recintosFiltrados = this.recintos.filter((recinto) => {
       const biomasRecinto = recinto.bioma.split(" e ");
