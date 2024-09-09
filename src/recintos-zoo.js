@@ -20,10 +20,10 @@ class RecintosZoo {
       new Animais("HIPOPOTAMO", 4, "savana ou rio"),
     ];
 
-    this.configurarRecintos();
+    this.configuraRecinto();
   }
 
-  configurarRecintos() {
+  configuraRecinto() {
     this.recintos[0].ocuparEspacos = this.animais[0].tamanho * 3;
     for (let i = 0; i < 3; i++) {
       this.recintos[0].registrarAnimaisNoRecinto = this.animais[0];
@@ -36,7 +36,7 @@ class RecintosZoo {
     this.recintos[4].registrarAnimaisNoRecinto = this.animais[1];
   }
 
-  filtrarRecintos(animalValido) {
+  filtraRecintos(animalValido) {
     return this.recintos.filter((recinto) => {
       const biomasRecinto = recinto.bioma.split(" e ");
       const biomasAnimal = animalValido.bioma.split(" ou ");
@@ -44,6 +44,50 @@ class RecintosZoo {
         biomasAnimal.includes(biomaRecinto)
       );
     });
+  }
+
+  validaRecintos(recinto, animalValido, quantidade) {
+    const animaisNoRecinto = recinto.animaisRegistrados;
+
+    const savanaRio = recinto.bioma.includes("savana e rio");
+
+    const carnivoroNoRecinto = animaisNoRecinto.find((a) => a.carnivoro);
+
+    const recintoVazio = animaisNoRecinto.length === 0;
+
+    if (!animalValido.carnivoro && carnivoroNoRecinto) {
+      return false;
+    }
+
+    const especieDiferente = animaisNoRecinto.some(
+      (animalNoRecinto) => animalNoRecinto.especie !== animalValido.especie
+    );
+
+    if (especieDiferente) {
+      recinto.ocuparEspacos = 1;
+    }
+
+    const espacosSuficientes =
+      recinto.espacosLivres >= animalValido.tamanho * quantidade;
+
+    const precisaDeCompanhia =
+      animalValido.especie === "MACACO" && quantidade === 1;
+
+    const podeAdicionarAnimalCarnivoro =
+      !animalValido.carnivoro ||
+      (carnivoroNoRecinto &&
+        carnivoroNoRecinto.especie === animalValido.especie);
+
+    if (animalValido.especie === "HIPOPOTAMO" && !recintoVazio && !savanaRio) {
+      return false;
+    }
+
+    const espacoViavel =
+      espacosSuficientes &&
+      !precisaDeCompanhia &&
+      (recintoVazio || podeAdicionarAnimalCarnivoro);
+
+    return espacoViavel;
   }
 
   analisaRecintos(animal, quantidade) {
@@ -57,55 +101,11 @@ class RecintosZoo {
       return { erro: "Animal inválido" };
     }
 
-    const recintosFiltrados = this.filtrarRecintos(animalValido);
+    const recintosFiltrados = this.filtraRecintos(animalValido);
 
-    const recintosViaveis = recintosFiltrados.filter((recinto) => {
-      const animaisNoRecinto = recinto.animaisRegistrados;
-
-      const savanaRio = recinto.bioma.includes("savana e rio");
-
-      const carnivoroNoRecinto = animaisNoRecinto.find((a) => a.carnivoro);
-
-      const recintoVazio = animaisNoRecinto.length === 0;
-
-      if (!animalValido.carnivoro && carnivoroNoRecinto) {
-        return false;
-      }
-
-      const especieDiferente = animaisNoRecinto.some(
-        (animalNoRecinto) => animalNoRecinto.especie !== animalValido.especie
-      );
-
-      if (especieDiferente) {
-        recinto.ocuparEspacos = 1;
-      }
-
-      const espacosSuficientes =
-        recinto.espacosLivres >= animalValido.tamanho * quantidade;
-
-      const precisaDeCompanhia =
-        animalValido.especie === "MACACO" && quantidade === 1;
-
-      const podeAdicionarAnimalCarnivoro =
-        !animalValido.carnivoro ||
-        (carnivoroNoRecinto &&
-          carnivoroNoRecinto.especie === animalValido.especie);
-
-      if (
-        animalValido.especie === "HIPOPOTAMO" &&
-        !recintoVazio &&
-        !savanaRio
-      ) {
-        return false;
-      }
-
-      const espacoViavel =
-        espacosSuficientes &&
-        !precisaDeCompanhia &&
-        (recintoVazio || podeAdicionarAnimalCarnivoro);
-
-      return espacoViavel;
-    });
+    const recintosViaveis = recintosFiltrados.filter((recinto) =>
+      this.validaRecintos(recinto, animalValido, quantidade)
+    );
 
     if (recintosViaveis.length === 0) {
       return { erro: "Não há recinto viável" };
