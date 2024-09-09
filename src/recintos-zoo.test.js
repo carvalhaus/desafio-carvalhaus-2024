@@ -55,4 +55,19 @@ describe("Recintos do Zoologico", () => {
     );
     expect(resultado.recintosViaveis.length).toBe(2);
   });
+
+  test("Deve encontrar recintos para 1 leão onde já há 1 leão no recinto", () => {
+    const resultado = new RecintosZoo().analisaRecintos("LEAO", 1);
+    expect(resultado.erro).toBeFalsy();
+    expect(resultado.recintosViaveis[0]).toBe(
+      "Recinto 5 (espaço livre: 3 total: 9)"
+    );
+    expect(resultado.recintosViaveis.length).toBe(1);
+  });
+
+  test("Não deve permitir dividir lote de 12 macacos entre recintos", () => {
+    const resultado = new RecintosZoo().analisaRecintos("MACACO", 12);
+    expect(resultado.erro).toBe("Não há recinto viável");
+    expect(resultado.recintosViaveis).toBeFalsy();
+  });
 });
