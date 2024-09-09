@@ -80,6 +80,16 @@ class RecintosZoo {
         (carnivoroNoRecinto &&
           carnivoroNoRecinto.especie === animalValido.especie);
 
+      const savanaRio = recinto.bioma.includes("savana e rio");
+
+      if (
+        animalValido.especie === "HIPOPOTAMO" &&
+        !recintoVazio &&
+        !savanaRio
+      ) {
+        return false;
+      }
+
       const espacoViavel =
         espacosSuficientes &&
         !precisaDeCompanhia &&
