@@ -19,6 +19,31 @@ class RecintosZoo {
       new Animais("GAZELA", 2, "savana"),
       new Animais("HIPOPOTAMO", 4, "savana ou rio"),
     ];
+
+    this.configurarRecintos();
+  }
+
+  configurarRecintos() {
+    this.recintos[0].ocuparEspacos = this.animais[0].tamanho * 3;
+    for (let i = 0; i < 3; i++) {
+      this.recintos[0].registrarAnimaisNoRecinto = this.animais[0];
+    }
+
+    this.recintos[2].ocuparEspacos = this.animais[4].tamanho;
+    this.recintos[2].registrarAnimaisNoRecinto = this.animais[4];
+
+    this.recintos[4].ocuparEspacos = this.animais[1].tamanho;
+    this.recintos[4].registrarAnimaisNoRecinto = this.animais[1];
+  }
+
+  filtrarRecintos(animalValido) {
+    return this.recintos.filter((recinto) => {
+      const biomasRecinto = recinto.bioma.split(" e ");
+      const biomasAnimal = animalValido.bioma.split(" ou ");
+      return biomasRecinto.some((biomaRecinto) =>
+        biomasAnimal.includes(biomaRecinto)
+      );
+    });
   }
 
   analisaRecintos(animal, quantidade) {
@@ -32,27 +57,12 @@ class RecintosZoo {
       return { erro: "Animal inválido" };
     }
 
-    this.recintos[0].ocuparEspacos = this.animais[0].tamanho * 3;
-    for (let i = 0; i < 3; i++) {
-      this.recintos[0].registrarAnimaisNoRecinto = this.animais[0];
-    }
-
-    this.recintos[2].ocuparEspacos = this.animais[4].tamanho;
-    this.recintos[2].registrarAnimaisNoRecinto = this.animais[4];
-
-    this.recintos[4].ocuparEspacos = this.animais[1].tamanho;
-    this.recintos[4].registrarAnimaisNoRecinto = this.animais[1];
-
-    const recintosFiltrados = this.recintos.filter((recinto) => {
-      const biomasRecinto = recinto.bioma.split(" e ");
-      const biomasAnimal = animalValido.bioma.split(" ou ");
-      return biomasRecinto.some((biomaRecinto) =>
-        biomasAnimal.includes(biomaRecinto)
-      );
-    });
+    const recintosFiltrados = this.filtrarRecintos(animalValido);
 
     const recintosViaveis = recintosFiltrados.filter((recinto) => {
       const animaisNoRecinto = recinto.animaisRegistrados;
+
+      const savanaRio = recinto.bioma.includes("savana e rio");
 
       const carnivoroNoRecinto = animaisNoRecinto.find((a) => a.carnivoro);
 
@@ -80,8 +90,6 @@ class RecintosZoo {
         !animalValido.carnivoro ||
         (carnivoroNoRecinto &&
           carnivoroNoRecinto.especie === animalValido.especie);
-
-      const savanaRio = recinto.bioma.includes("savana e rio");
 
       if (
         animalValido.especie === "HIPOPOTAMO" &&
